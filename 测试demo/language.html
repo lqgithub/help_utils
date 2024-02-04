@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Document</title>
+ <style>
+ .text{
+ background-color: bisque;
+ width: 100px;
+ height: 60px;
+ margin: 10px;
+ font-size: 18px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ }
+ </style>
+</head>
+<body>
+ 中文：<input type="text" id="chInput"><br>
+ 数字：<input type="number" id="numInput"><br>
+ 英文：<input type="text" id="enInput"><br>
+ <button onclick="addInfo()">提交</button><br>
+ <select name="option" id="language" onchange="langChange()">
+ <option value="" hidden>请选择语言</option>
+ <option value="ch" selected>中文</option>
+ <option value="num">数字</option>
+ <option value="en">英文</option>
+ </select>
+ <div id="textBox"></div>
+</body>
+<script>
+ class TextDom {
+ domList = null
+ constructor(lang){
+ this.domList = new Map();
+ this.lang = lang 
+ this._lang = lang // 必须设置--set设置的lang不具备存储读取功能-无法访问
+ console.log(this);
+ }
+ addDom(dom,info){
+ this.domList.set(dom, info);
+ this.setDom(dom,info[this.lang])
+ }
+ setDom(dom,text){
+ dom.innerText = text
+ }
+ get lang(){
+ return this._lang
+ }
+ set lang(value){
+ this._lang = value
+ console.log("changeLang",value);
+ this.changeLang(value)
+ }
+ changeLang(lang){
+ console.log(this.domList);
+ this.domList.forEach((info,dom)=>{
+ this.setDom(dom,info[lang])
+ })
+ }
+ }
+ const chInput = document.getElementById("chInput")
+ const numInput = document.getElementById("numInput")
+ const enInput = document.getElementById("enInput")
+ const textBox = document.getElementById("textBox")
+ const langBox = document.getElementById("language")
+ const language = langBox.value
+ const domControl = new TextDom(language)
+ function clearInput(){
+ chInput.value = ""
+ numInput.value = ""
+ enInput.value = ""
+ }
+ function addInfo(){
+ const textInfo = {
+ ch:chInput.value,
+ num:numInput.value,
+ en:enInput.value
+ }
+ const div = document.createElement("div")
+ div.setAttribute("class","text")
+ textBox.appendChild(div)
+ domControl.addDom(div,textInfo)
+ clearInput()
+ console.log(textInfo);
+ }
+ function langChange(){
+ console.log(langBox.value);
+ domControl.lang = langBox.value
+ }
+
+</script>
+</html>
